@@ -1,6 +1,5 @@
 import cv2
 import argparse
-import imutils
 from transformation import four_point_transform
 
 parser = argparse.ArgumentParser(description='Scan a document from an image.')
