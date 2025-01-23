@@ -1,6 +1,5 @@
-from collections import deque
-from imutils.video import VideoStream
 import cv2
+from collections import deque
 import imutils
 
 pts = deque(maxlen=64)
