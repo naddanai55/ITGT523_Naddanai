@@ -12,6 +12,7 @@ WHITE = (255, 255, 255)
 GREY = (242, 239, 231)
 TEAL = (72, 166, 167)
 BLUE = (41, 115, 178)
+SKY = (154, 203, 208)
 font = pygame.font.Font(None, 36)
 title_font = pygame.font.Font(None, 72)
 
@@ -65,7 +66,7 @@ def load_image():
         message = "Image loaded! Press 'Process' to continue."
 
 def process_image():
-    global input_image, processed_card, message
+    global input_image, processed_card, message, cartoon_filter_enabled
     if input_image is None:
         message = "No image loaded."
         return
@@ -81,17 +82,18 @@ def process_image():
     face_img = input_image[y:y+h, x:x+w]
     face_img = cv2.resize(face_img, (250, 250))
     
-    face_gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
-    face_blur = cv2.medianBlur(face_gray, 5)
-    getEdge = cv2.adaptiveThreshold(face_blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 9)
-    color_img = cv2.bilateralFilter(face_img, 9, 300, 300)
-    cartoon_img = cv2.bitwise_and(color_img, color_img, mask=getEdge)
+    if cartoon_filter_enabled:
+        face_gray = cv2.cvtColor(face_img, cv2.COLOR_BGR2GRAY)
+        face_blur = cv2.medianBlur(face_gray, 5)
+        getEdge = cv2.adaptiveThreshold(face_blur, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 9)
+        color_img = cv2.bilateralFilter(face_img, 9, 300, 300)
+        face_img = cv2.bitwise_and(color_img, color_img, mask=getEdge)
     # cv2.imshow("Cartoon", cartoon_img)
 
     card_template = cv2.imread('bg.png')
     x_offset = 688  
     y_offset = 228  
-    card_template[y_offset:y_offset + cartoon_img.shape[0], x_offset:x_offset + cartoon_img.shape[1]] = cartoon_img  
+    card_template[y_offset:y_offset + face_img.shape[0], x_offset:x_offset + face_img.shape[1]] = face_img  
 
     processed_card = card_template  
     message = "Image processed!"
@@ -117,13 +119,20 @@ def convert_cv_to_pygame(cv_img):
     rgb_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
     return pygame.surfarray.make_surface(np.transpose(rgb_img, (1, 0, 2)))
 
+def toggle_cartoon_filter():
+    global cartoon_filter_enabled, message
+    cartoon_filter_enabled = not cartoon_filter_enabled
+    # message = f"Cartoon filter {'enabled' if cartoon_filter_enabled else 'disabled'}."
+
 buttons = [
     Button("Load Image", 50, 500, 150, 50, TEAL, BLUE, load_image),
-    Button("Process", 250, 500, 150, 50, TEAL, BLUE, process_image),
-    Button("Export", 450, 500, 150, 50, TEAL, BLUE, save_image),
+    Button("Process", 205, 500, 150, 50, TEAL, BLUE, process_image),
+    Button("Export", 535, 500, 150, 50, TEAL, BLUE, save_image),
+    Button("Filter", 205, 555, 100, 40, TEAL, BLUE, toggle_cartoon_filter),
 ]
 
 running = True
+cartoon_filter_enabled = True 
 input_image = None  
 processed_card = None  
 message = "Welcome! to ID Creator Load an image to get started."
@@ -133,6 +142,8 @@ while running:
     name_text = title_font.render("ID Creator", True, BLUE)
     screen.blit(name_text, (50, 30))
     
+    pygame.draw.rect(screen, SKY, (0, 150, 800, 300)) 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -145,14 +156,21 @@ while running:
 
     if input_image is not None:
         input_surface = convert_cv_to_pygame(input_image) 
-        screen.blit(pygame.transform.scale(input_surface, (300, 300)), (50, 150))  
+        screen.blit(pygame.transform.scale(input_surface, (300, 300)), (50, 150))
+        img_text = font.render("Your image!", True, BLUE)
+        screen.blit(img_text, (140, 460))  
 
     if processed_card is not None:
         card_surface = convert_cv_to_pygame(processed_card)  
-        screen.blit(pygame.transform.scale(card_surface, (300, 300)), (450, 150)) 
+        screen.blit(pygame.transform.scale(card_surface, (300, 300)), (450, 150))
+        card_text = font.render("Your card!", True, BLUE)
+        screen.blit(card_text, (550, 460)) 
         
     message_surface = font.render(message, True, BLUE)
-    screen.blit(message_surface, (50, 450))
+    screen.blit(message_surface, (50, 100))
+    
+    filter_status = font.render(f": {'On' if cartoon_filter_enabled else 'Off'}", True, BLUE)
+    screen.blit(filter_status, (310, 565))
 
     pygame.display.flip()
     # key = cv2.waitKey(0)
