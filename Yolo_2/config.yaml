@@ -1,0 +1,6 @@
+train: C:\Users\nparo\OneDrive\GT - Mahidol\Class\2nd\ITGT523 Computer Vision\ITGT523_Naddanai\Yolo_2\train
+val: C:\Users\nparo\OneDrive\GT - Mahidol\Class\2nd\ITGT523 Computer Vision\ITGT523_Naddanai\Yolo_2\val
+test: C:\Users\nparo\OneDrive\GT - Mahidol\Class\2nd\ITGT523 Computer Vision\ITGT523_Naddanai\Yolo_2\test
+
+nc: 1  
+names: ["Poring"]  
