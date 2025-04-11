@@ -2,70 +2,76 @@ from ultralytics import YOLO
 import numpy as np
 import cv2
 import os
+import csv
 
-model = YOLO("yolo11s-pose.pt")
+# Load YOLO pose model
+model = YOLO("yolo11n-pose.pt")
 
-def is_falling(keypoints, threshold_angle=90, tolerance=45, vertical_threshold=1.5):
+def is_falling(keypoints, threshold_angle=90, tolerance=25):
     if keypoints is None or keypoints.shape[0] < 13:
-        print("Error: keypoints detected")
-        return False, 90 
-    
+        return False, 90
+
     left_shoulder = keypoints[5]
     right_shoulder = keypoints[6]
     left_hip = keypoints[11]
     right_hip = keypoints[12]
 
-    if np.isnan(left_shoulder).any() or np.isnan(right_shoulder).any() or np.isnan(left_hip).any() or np.isnan(right_hip).any():
-        print("Error: keypoints are NaN")
-        return False, 90 
-    
+    if any((x == 0 and y == 0) for x, y in [left_shoulder, right_shoulder, left_hip, right_hip]):
+        return False, 90
+
     shoulder_mid = (left_shoulder + right_shoulder) / 2
     hip_mid = (left_hip + right_hip) / 2
     dx = hip_mid[0] - shoulder_mid[0]
     dy = hip_mid[1] - shoulder_mid[1]
-    print("dx:", dx, "dy:", dy)
     angle = abs(np.degrees(np.arctan2(dy, dx)))
 
-    if abs(angle - threshold_angle) > tolerance:
-        return True, angle
-    
-    return False, angle
+    return abs(angle - threshold_angle) > tolerance, angle
 
-capture = cv2.VideoCapture(0)
-while True:
-    ret, frame = capture.read()
-    if not ret:
-        print("Error: Unable to capture frame from webcam.")
-        break
+# Root dataset directory
+dataset_dir = r"C:\Users\Nai\OneDrive\GT - Mahidol\Class\2nd\ITGT523 Computer Vision\ITGT523_Naddanai\fall_detect\Homemade CCTV Falling Dataset"
 
-    try:
-        results = model(frame)
-    except Exception as e:
-        print(f"Error processing frame with YOLO model: {e}")
-        continue
+# Output CSV file
+output_csv = "fall_detection_results.csv"
 
-    for result in results:
-        if result.keypoints is not None:
-            keypoints = result.keypoints.xy.cpu().numpy()  # Convert all keypoints to NumPy array
-if k                # Draw keypoints
-                for x, y in keypoints:
-                    cv2.circle(frame, (int(x), int(y)), 5, (0, 0, 255), -1)
+with open(output_csv, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Category", "Video Name", "Total Frames", "Fall Frames", "Fall %", "Fall Detected"])
 
-                # Call is_falling with the full set of keypoints
-                falling, angle = is_falling(keypoints)
-                label = "Falling" if falling else "Standing"
-                color = (0, 0, 255) if falling else (0, 255, 0)
-                cv2.putText(frame, label, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
-                cv2.putText(frame, f"Angle: {angle:.1f}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
-            else:
-                print("Error: Not enough keypoints detected.")
-        else:
-            print("Error: No keypoints detected.")
+    for category in os.listdir(dataset_dir):
+        category_path = os.path.join(dataset_dir, category)
 
-    cv2.imshow("Frame", frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if not os.path.isdir(category_path):
+            continue
 
-capture.release()
-cv2.destroyAllWindows()
+        for video_file in os.listdir(category_path):
+            if not video_file.lower().endswith(".mp4"):
+                continue
 
+            video_path = os.path.join(category_path, video_file)
+            cap = cv2.VideoCapture(video_path)
+
+            total_frames = 0
+            fall_frames = 0
+
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+
+                results = model.predict(frame, verbose=False)
+                total_frames += 1
+
+                for r in results:
+                    keypoints = r.keypoints.xy.cpu().numpy()[0] if r.keypoints.xy is not None else None
+                    falling, angle = is_falling(keypoints)
+                    if falling:
+                        fall_frames += 1
+                    break  # just use first detection (assumes 1 person)
+
+            cap.release()
+
+            fall_percent = (fall_frames / total_frames) * 100 if total_frames > 0 else 0
+            fall_detected = fall_percent > 30  # you can adjust threshold
+            writer.writerow([category, video_file, total_frames, fall_frames, f"{fall_percent:.2f}", fall_detected])
+
+print("Finished processing all videos.")
