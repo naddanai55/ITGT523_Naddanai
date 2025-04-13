@@ -4,7 +4,6 @@ import cv2
 import os
 import csv
 
-# Load YOLO pose model
 model = YOLO("yolo11n-pose.pt")
 
 def is_falling(keypoints, threshold_angle=90, tolerance=25):
@@ -27,10 +26,8 @@ def is_falling(keypoints, threshold_angle=90, tolerance=25):
 
     return abs(angle - threshold_angle) > tolerance, angle
 
-# Root dataset directory
 dataset_dir = r"C:\Users\Nai\OneDrive\GT - Mahidol\Class\2nd\ITGT523 Computer Vision\ITGT523_Naddanai\fall_detect\Homemade CCTV Falling Dataset"
 
-# Output CSV file
 output_csv = "fall_detection_results.csv"
 
 with open(output_csv, mode='w', newline='') as file:
@@ -66,12 +63,12 @@ with open(output_csv, mode='w', newline='') as file:
                     falling, angle = is_falling(keypoints)
                     if falling:
                         fall_frames += 1
-                    break  # just use first detection (assumes 1 person)
+                    break
 
             cap.release()
 
             fall_percent = (fall_frames / total_frames) * 100 if total_frames > 0 else 0
-            fall_detected = fall_percent > 30  # you can adjust threshold
+            fall_detected = fall_percent > 30
             writer.writerow([category, video_file, total_frames, fall_frames, f"{fall_percent:.2f}", fall_detected])
 
 print("Finished processing all videos.")
