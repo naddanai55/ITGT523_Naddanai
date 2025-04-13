@@ -1,29 +1,29 @@
 Category,Video Name,Total Frames,Fall Frames,Fall %,Fall Detected
-Almost Fall,Almost Fall-East.mp4,124,15,12.10,False
-Almost Fall,Almost Fall-North.mp4,174,0,0.00,False
-Almost Fall,Almost Fall-South.mp4,162,9,5.56,False
-Almost Fall,Almost Fall-West.mp4,122,47,38.52,True
-Fall East,Fall East 1.mp4,201,121,60.20,True
-Fall East,Fall East 2.mp4,218,81,37.16,True
-Fall East,Fall East 3.mp4,221,95,42.99,True
-Fall East,Fall East 4.mp4,257,91,35.41,True
-Fall East,Fall East 5.mp4,217,92,42.40,True
-Fall North,Fall North 1.mp4,158,0,0.00,False
-Fall North,Fall North 2.mp4,170,0,0.00,False
-Fall North,Fall North 3.mp4,186,6,3.23,False
-Fall North,Fall North 4.mp4,272,60,22.06,False
-Fall North,Fall North 5.mp4,252,79,31.35,True
-Fall South,Fall South 1.mp4,124,32,25.81,False
-Fall South,Fall South 2.mp4,170,0,0.00,False
-Fall South,Fall South 3.mp4,155,4,2.58,False
-Fall South,Fall South 4.mp4,241,37,15.35,False
-Fall South,Fall South 5.mp4,216,25,11.57,False
-Fall West,Fall West 1.mp4,217,82,37.79,True
-Fall West,Fall West 2.mp4,161,23,14.29,False
-Fall West,Fall West 3.mp4,138,55,39.86,True
-Fall West,Fall West 4.mp4,236,94,39.83,True
-Fall West,Fall West 5.mp4,201,80,39.80,True
-No Fall,No Fall-East.mp4,149,0,0.00,False
-No Fall,No Fall-North.mp4,159,0,0.00,False
-No Fall,No Fall-South.mp4,155,0,0.00,False
-No Fall,No Fall-West.mp4,127,0,0.00,False
+Almost Fall,Almost Fall-East.mp4,124,15,12.1,FALSE
+Almost Fall,Almost Fall-North.mp4,174,0,0,FALSE
+Almost Fall,Almost Fall-South.mp4,162,9,5.56,FALSE
+Almost Fall,Almost Fall-West.mp4,122,47,38.52,TRUE
+Fall East,Fall East 1.mp4,201,121,60.2,TRUE
+Fall East,Fall East 2.mp4,218,81,37.16,TRUE
+Fall East,Fall East 3.mp4,221,95,42.99,TRUE
+Fall East,Fall East 4.mp4,257,91,35.41,TRUE
+Fall East,Fall East 5.mp4,217,92,42.4,TRUE
+Fall North,Fall North 1.mp4,158,0,0,FALSE
+Fall North,Fall North 2.mp4,170,0,0,FALSE
+Fall North,Fall North 3.mp4,186,6,3.23,FALSE
+Fall North,Fall North 4.mp4,272,60,22.06,FALSE
+Fall North,Fall North 5.mp4,252,79,31.35,TRUE
+Fall South,Fall South 1.mp4,124,32,25.81,FALSE
+Fall South,Fall South 2.mp4,170,0,0,FALSE
+Fall South,Fall South 3.mp4,155,4,2.58,FALSE
+Fall South,Fall South 4.mp4,241,37,15.35,FALSE
+Fall South,Fall South 5.mp4,216,25,11.57,FALSE
+Fall West,Fall West 1.mp4,217,82,37.79,TRUE
+Fall West,Fall West 2.mp4,161,23,14.29,FALSE
+Fall West,Fall West 3.mp4,138,55,39.86,TRUE
+Fall West,Fall West 4.mp4,236,94,39.83,TRUE
+Fall West,Fall West 5.mp4,201,80,39.8,TRUE
+No Fall,No Fall-East.mp4,149,0,0,FALSE
+No Fall,No Fall-North.mp4,159,0,0,FALSE
+No Fall,No Fall-South.mp4,155,0,0,FALSE
+No Fall,No Fall-West.mp4,127,0,0,FALSE
